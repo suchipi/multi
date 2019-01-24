@@ -1,0 +1,11 @@
+{
+  "name": "@multi/client",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "private": true,
+  "workspace-builder": [
+    "@workspace-builder/babel",
+    "@workspace-builder/copy-ts"
+  ]
+}

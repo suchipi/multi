@@ -1,0 +1,22 @@
+{
+  "name": "@multi/monorepo",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/client",
+    "packages/server"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.1",
+    "@babel/preset-typescript": "^7.1.0",
+    "@workspace-builder/babel": "^0.2.0",
+    "@workspace-builder/copy-ts": "^0.1.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "workspace-builder": "^0.2.1"
+  },
+  "scripts": {
+    "build": "workspace-builder",
+    "build:watch": "workspace-builder watch"
+  }
+}
