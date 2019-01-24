@@ -1,0 +1,20 @@
+{
+  "name": "@multi/net-server",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "private": true,
+  "workspace-builder": [
+    "@workspace-builder/babel",
+    "@workspace-builder/copy-ts"
+  ],
+  "dependencies": {
+    "@multi/app-state": "1.0.0",
+    "@multi/net-protocol": "1.0.0",
+    "@types/ws": "^6.0.1",
+    "little-api": "^2.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.16.1"
+  }
+}

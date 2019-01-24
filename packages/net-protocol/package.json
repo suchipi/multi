@@ -1,0 +1,10 @@
+{
+  "name": "@multi/net-protocol",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@multi/app-state": "1.0.0"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "name": "@multi/client",
+  "name": "@multi/net-client",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
@@ -7,5 +7,10 @@
   "workspace-builder": [
     "@workspace-builder/babel",
     "@workspace-builder/copy-ts"
-  ]
+  ],
+  "dependencies": {
+    "@multi/app-state": "1.0.0",
+    "@multi/net-protocol": "1.0.0",
+    "little-api": "^2.0.0"
+  }
 }

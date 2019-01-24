@@ -1,5 +1,5 @@
 {
-  "name": "@multi/server",
+  "name": "@multi/app-state",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
