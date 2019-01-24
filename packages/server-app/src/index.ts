@@ -1,4 +1,7 @@
+import { setEnv } from "@multi/env";
 import netServer from "@multi/net-server";
+
+setEnv("server");
 
 const server = netServer(console.log);
 

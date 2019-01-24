@@ -1,3 +1,5 @@
+import { getEnv } from "@multi/env";
+
 export type State = {
   count: number;
 };
@@ -20,14 +22,7 @@ export default function reducer(state: State, action: Action) {
       };
     }
     default: {
-      assertNever(
-        action.type,
-        `app-state reducer received unexpected action type: ${action.type}`
-      );
+      return state;
     }
   }
-}
-
-function assertNever(obj: never, message: string): never {
-  throw new Error(message);
 }

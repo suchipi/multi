@@ -5,6 +5,7 @@
   "workspaces": [
     "packages/app-state",
     "packages/client-app",
+    "packages/env",
     "packages/net-client",
     "packages/net-protocol",
     "packages/net-server",

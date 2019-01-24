@@ -5,7 +5,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@multi/net-client": "1.0.0"
+    "@multi/net-client": "1.0.0",
+    "@multi/env": "1.0.0"
   },
   "devDependencies": {
     "@workspace-builder/tools": "^0.2.0",

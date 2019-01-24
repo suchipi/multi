@@ -1,5 +1,7 @@
+import { setEnv } from "@multi/env";
 import netClient from "@multi/net-client";
 
+setEnv("client");
 const client = netClient("http://localhost:6789");
 
 client.connect().then(

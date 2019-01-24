@@ -27,7 +27,6 @@ const netClient = (url: string): NetClient => {
         socket = api.connect();
         socket.onmessage = (event) => {
           const snapshot: ServerMessage = JSON.parse(event.data);
-          console.log("Received snapshot: ", snapshot);
           send({ type: "ack", time: snapshot.time });
           state = snapshot.state;
         };

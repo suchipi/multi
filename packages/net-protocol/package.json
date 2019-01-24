@@ -1,9 +1,13 @@
 {
   "name": "@multi/net-protocol",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "private": true,
+  "workspace-builder": [
+    "@workspace-builder/babel",
+    "@workspace-builder/copy-ts"
+  ],
   "dependencies": {
     "@multi/app-state": "1.0.0"
   }

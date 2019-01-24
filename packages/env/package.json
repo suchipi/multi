@@ -1,5 +1,5 @@
 {
-  "name": "@multi/app-state",
+  "name": "@multi/env",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
@@ -7,8 +7,5 @@
   "workspace-builder": [
     "@workspace-builder/babel",
     "@workspace-builder/copy-ts"
-  ],
-  "dependencies": {
-    "@multi/env": "1.0.0"
-  }
+  ]
 }
