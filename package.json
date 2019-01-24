@@ -19,12 +19,12 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "http-server": "^0.11.1",
     "nodemon": "^1.18.9",
-    "workspace-builder": "^0.2.1"
+    "workspace-builder": "^0.3.0"
   },
   "scripts": {
     "build": "workspace-builder",
     "build:watch": "workspace-builder watch",
-    "dev:server": "nodemon packages/server-app/dist/index.js",
+    "dev:server": "nodemon --watch packages/server-app/dist packages/server-app/dist/index.js",
     "dev:client": "http-server -p 1234 packages/client-app/dist",
     "dev": "concurrently --names server,client,build 'yarn dev:server' 'yarn dev:client' 'yarn build:watch'"
   }
