@@ -9,6 +9,7 @@
     "packages/net-client",
     "packages/net-protocol",
     "packages/net-server",
+    "packages/renderer",
     "packages/server-app"
   ],
   "devDependencies": {
@@ -27,6 +28,6 @@
     "build:watch": "workspace-builder watch",
     "dev:server": "nodemon --watch packages/server-app/dist packages/server-app/dist/index.js",
     "dev:client": "http-server -p 1234 packages/client-app/dist",
-    "dev": "concurrently --names server,client,build 'yarn dev:server' 'yarn dev:client' 'yarn build:watch'"
+    "start": "concurrently --names server,client,build 'yarn dev:server' 'yarn dev:client' 'yarn build:watch'"
   }
 }

@@ -1,24 +1,26 @@
 import { getEnv } from "@multi/env";
+import { Entity } from "./entity";
 
 export type State = {
-  count: number;
+  entities: Array<Entity>;
 };
 
 export type Action = {
-  type: "INCREASE";
+  type: "CREATE_ENTITY";
+  entity: Entity;
 };
 
 export function initialState(): State {
   return {
-    count: 0,
+    entities: [],
   };
 }
 
-export default function reducer(state: State, action: Action) {
+export default function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case "INCREASE": {
+    case "CREATE_ENTITY": {
       return {
-        count: state.count + 1,
+        entities: [...state.entities, action.entity],
       };
     }
     default: {
