@@ -93,6 +93,9 @@ const netClient = (
       };
       log(`Outbound message ${message.actionId}:`, message);
       optimisticMessageQueue.push(message);
+      // TODO: we don't handle the case where the server *never* receives a
+      // message- we need some way of detecting that (timeout maybe) so we can
+      // remove the unreceived message from the optimistic message queue.
       log(`Added message ${message.actionId} to optimistic message queue:`, [
         ...optimisticMessageQueue,
       ]);
