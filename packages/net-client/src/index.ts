@@ -91,7 +91,6 @@ const netClient = (url: string): NetClient => {
             log("Connected to server");
             resolve();
           };
-          socket.onerror = () => reject(new Error("Websocket failed to open"));
           socket.onclose = () => {
             log("Socket closed; reconnecting in 1 second");
             setTimeout(() => {
