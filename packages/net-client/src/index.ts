@@ -81,7 +81,7 @@ const netClient = (url: string): NetClient => {
   var client = {
     connect: () => {
       function connectToSocket(clientId: ClientID) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           socket = api.connect(clientId);
           socket.onmessage = (event) => {
             const serverMessages: Array<ServerMessage> = JSON.parse(event.data);
@@ -94,7 +94,7 @@ const netClient = (url: string): NetClient => {
           socket.onclose = () => {
             log("Socket closed; reconnecting in 1 second");
             setTimeout(() => {
-              client.connect();
+              resolve(client.connect());
             }, 1000);
           };
         });
