@@ -10,7 +10,7 @@ export default class RollingQueue<T> {
   add(item: T) {
     this.items.push(item);
     if (this.items.length > this.maxSize) {
-      this.items.splice(0, 1); // remove first item
+      this.items.shift();
     }
   }
 
