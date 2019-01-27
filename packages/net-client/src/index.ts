@@ -5,6 +5,9 @@ import {
   ClientMessage,
   ClientActionMessage,
 } from "@multi/net-protocol";
+import debug from "debug";
+
+const log = debug("@multi/net-client");
 
 export type NetClient = {
   connect(): Promise<void>;
@@ -14,10 +17,7 @@ export type NetClient = {
 
 const optimismTimeout = 2000; // ms
 
-const netClient = (
-  url: string,
-  log: (...message: Array<any>) => void
-): NetClient => {
+const netClient = (url: string): NetClient => {
   const api: any = createClient({
     url,
     socketMethods: ["connect"],

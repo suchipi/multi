@@ -12,6 +12,7 @@
     "@multi/game-state": "1.0.0",
     "@multi/net-protocol": "1.0.0",
     "@types/ws": "^6.0.1",
+    "debug": "^4.1.1",
     "little-api": "^2.0.0"
   },
   "devDependencies": {

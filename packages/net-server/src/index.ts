@@ -5,8 +5,11 @@ import { ClientMessage, ServerMessage } from "@multi/net-protocol";
 import Snapshot from "./Snapshot";
 import RollingQueue from "./RollingQueue";
 import Client from "./Client";
+import debug from "debug";
 
-export default function netServer(log: (message: string) => void) {
+const log = debug("@multi/net-server");
+
+export default function netServer() {
   const snapshots: RollingQueue<Snapshot> = new RollingQueue(32);
   snapshots.add(new Snapshot(initialState()));
 

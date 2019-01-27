@@ -14,10 +14,7 @@ export default class Client {
   controls: KeyListener;
 
   constructor() {
-    this.netClient = makeNetClient(
-      "http://localhost:6789",
-      console.log.bind(console)
-    );
+    this.netClient = makeNetClient("http://localhost:6789");
     this.localState = initialLocalState();
     this.controls = setupControls(this);
     this.controls.bindListeners();

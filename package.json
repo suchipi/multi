@@ -29,6 +29,6 @@
     "build:watch": "workspace-builder watch",
     "dev:server": "nodemon --watch packages/server-app/dist packages/server-app/dist/index.js",
     "dev:client": "http-server -p 1234 packages/client-app/dist",
-    "start": "concurrently --names server,client,build 'yarn dev:server' 'yarn dev:client' 'yarn build:watch'"
+    "start": "env DEBUG='@multi/*' DEBUG_COLORS='true' concurrently --names server,client,build 'yarn dev:server' 'yarn dev:client' 'yarn build:watch'"
   }
 }

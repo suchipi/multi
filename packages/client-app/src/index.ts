@@ -2,6 +2,8 @@ import { setEnv } from "@multi/env";
 import Renderer from "./Renderer";
 import Client from "./Client";
 
+localStorage.debug = "@multi/*";
+
 setEnv("client");
 const client = new Client();
 
