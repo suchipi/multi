@@ -1,18 +1,25 @@
 import { State, Action } from "@multi/game-state";
 
+export type ClientActionMessage = {
+  type: "action";
+  action: Action;
+  actionId: number;
+};
+
 export type ClientMessage =
+  | ClientActionMessage
   | {
-      type: "action";
-      action: Action;
+      type: "ack";
+      snapshotId: number;
+    };
+
+export type ServerMessage =
+  | {
+      type: "snapshot";
+      snapshotId: number;
+      state: State;
     }
   | {
       type: "ack";
-      time: number;
+      actionId: number;
     };
-
-export type Snapshot = {
-  time: number;
-  state: State;
-};
-
-export type ServerMessage = Snapshot;

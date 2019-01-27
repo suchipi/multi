@@ -14,7 +14,10 @@ export default class Client {
   controls: KeyListener;
 
   constructor() {
-    this.netClient = makeNetClient("http://localhost:6789");
+    this.netClient = makeNetClient(
+      "http://localhost:6789",
+      console.log.bind(console)
+    );
     this.localState = initialLocalState();
     this.controls = setupControls(this);
     this.controls.bindListeners();
@@ -29,7 +32,9 @@ export default class Client {
 
   dispatch(action: Action) {
     this.localState = localStateReducer(this.localState, action);
-    // @ts-ignore
+    // @ts-ignore passing LocalAction into remote reducer.
+    // Shouldn't be a problem, though, since default case
+    // of a reducer returns the current state.
     this.netClient.dispatch(action);
   }
 

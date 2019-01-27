@@ -1,23 +1,32 @@
 import createServer from "little-api/server";
 import WebSocket from "ws";
-import { initialState, reducer } from "@multi/game-state";
-import { Snapshot, ClientMessage, ServerMessage } from "@multi/net-protocol";
+import { State, initialState, reducer } from "@multi/game-state";
+import { ClientMessage, ServerMessage } from "@multi/net-protocol";
+import RollingQueue from "./RollingQueue";
+
+type Snapshot = {
+  snapshotId: number;
+  state: State;
+};
 
 type Client = {
   id: number;
   socket: WebSocket;
   lastSeenAt: number;
-  lastSnapshotAcked: number;
+  lastReceivedSnapshot: Snapshot | null;
+  messageQueue: Array<ServerMessage>;
 };
 
 export default function netServer(log: (message: string) => void) {
-  let currentSnapshot: Snapshot = {
-    time: Date.now(),
+  let snapshotId = 0;
+  const snapshots: RollingQueue<Snapshot> = new RollingQueue(32);
+  snapshots.add({
+    snapshotId: snapshotId++,
     state: initialState(),
-  };
+  });
 
   const clients: Set<Client> = new Set();
-  let id = 0;
+  let clientId = 0;
 
   const server = createServer({
     socketMethods: {
@@ -25,10 +34,11 @@ export default function netServer(log: (message: string) => void) {
         const connectionTime = Date.now();
 
         const client: Client = {
-          id: id++,
+          id: clientId++,
           socket,
           lastSeenAt: connectionTime,
-          lastSnapshotAcked: 0,
+          lastReceivedSnapshot: null,
+          messageQueue: [],
         };
         log(`client ${client.id} connected`);
 
@@ -62,18 +72,26 @@ export default function netServer(log: (message: string) => void) {
 
     switch (message.type) {
       case "ack": {
-        client.lastSnapshotAcked = message.time;
-        log(`client ${client.id} acked snapshot ${message.time}`);
+        log(`client ${client.id} acked snapshot ${message.snapshotId}`);
+        client.lastReceivedSnapshot = snapshots.find(
+          (snapshot) => snapshot.snapshotId === message.snapshotId
+        );
         break;
       }
       case "action": {
         const action = message.action;
         log(`client ${client.id} sent action: ${JSON.stringify(action)}`);
-        currentSnapshot = {
-          time: messageTime,
-          state: reducer(currentSnapshot.state, action),
+        const id = snapshotId++;
+        snapshots.add({
+          snapshotId: id,
+          state: reducer(snapshots.mostRecent().state, action),
+        });
+        log(`created snapshot ${id}`);
+        const ack: ServerMessage = {
+          type: "ack",
+          actionId: message.actionId,
         };
-        log(`created snapshot ${messageTime}`);
+        client.messageQueue.push(ack);
         break;
       }
     }
@@ -84,11 +102,23 @@ export default function netServer(log: (message: string) => void) {
   const tickrate = 33;
   setInterval(() => {
     clients.forEach((client) => {
-      if (client.lastSnapshotAcked < currentSnapshot.time) {
-        log(`sending snapshot ${currentSnapshot.time} to client ${client.id}`);
-        const message: ServerMessage = currentSnapshot;
-        client.socket.send(JSON.stringify(message));
+      const mostRecentSnapshot = snapshots.mostRecent();
+      if (client.lastReceivedSnapshot !== mostRecentSnapshot) {
+        log(
+          `sending snapshot ${mostRecentSnapshot.snapshotId} to client ${
+            client.id
+          }`
+        );
+        const message: ServerMessage = {
+          type: "snapshot",
+          ...mostRecentSnapshot,
+        };
+        client.messageQueue.push(message);
       }
+      if (client.messageQueue.length > 0) {
+        client.socket.send(JSON.stringify(client.messageQueue));
+      }
+      client.messageQueue = [];
     });
   }, tickrate);
 
