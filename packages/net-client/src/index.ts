@@ -12,6 +12,8 @@ export type NetClient = {
   getState(): State;
 };
 
+const optimismTimeout = 2000; // ms
+
 const netClient = (
   url: string,
   log: (...message: Array<any>) => void
@@ -93,9 +95,6 @@ const netClient = (
       };
       log(`Outbound message ${message.actionId}:`, message);
       optimisticMessageQueue.push(message);
-      // TODO: we don't handle the case where the server *never* receives a
-      // message- we need some way of detecting that (timeout maybe) so we can
-      // remove the unreceived message from the optimistic message queue.
       log(`Added message ${message.actionId} to optimistic message queue:`, [
         ...optimisticMessageQueue,
       ]);
@@ -104,6 +103,23 @@ const netClient = (
       // send to server
       log(`Sending message ${message.actionId} to server`);
       send(message);
+
+      setTimeout(() => {
+        if (optimisticMessageQueue.includes(message)) {
+          // The message still hasn't been confirmed by the server.
+          // Let's give up on it.
+          log(
+            `Server hasn't confirmed ${
+              message.actionId
+            } within ${optimismTimeout}ms. Removing from optimistic message queue.`
+          );
+          optimisticMessageQueue = optimisticMessageQueue.filter(
+            (otherMessage) => otherMessage !== message
+          );
+          log(`Optimistic message queue:`, [...optimisticMessageQueue]);
+          recalculateOptimisticState();
+        }
+      }, optimismTimeout);
     },
     getState: () => {
       return optimisticState;
