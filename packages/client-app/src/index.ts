@@ -1,9 +1,9 @@
 import { setEnv } from "@multi/env";
-import netClient from "@multi/net-client";
-import Renderer from "@multi/renderer";
+import Renderer from "./Renderer";
+import Client from "./Client";
 
 setEnv("client");
-const client = netClient("http://localhost:6789");
+const client = new Client();
 
 // @ts-ignore
 global.client = client;
@@ -37,9 +37,9 @@ function onFrame() {
   canvas.style.width = window.innerWidth + "px";
   canvas.style.height = window.innerHeight + "px";
 
-  const state = client.getState();
-  renderer.render(state);
-  pre.textContent = JSON.stringify(state, null, 2);
+  renderer.render(client);
+  const gameState = client.getState();
+  pre.textContent = JSON.stringify(gameState, null, 2);
 
   requestAnimationFrame(onFrame);
 }

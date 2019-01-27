@@ -1,5 +1,5 @@
 {
-  "name": "@multi/app-state",
+  "name": "@multi/game-state",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
@@ -9,6 +9,7 @@
     "@workspace-builder/copy-ts"
   ],
   "dependencies": {
-    "@multi/env": "1.0.0"
+    "@multi/env": "1.0.0",
+    "@multi/models": "1.0.0"
   }
 }

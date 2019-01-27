@@ -3,17 +3,18 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/app-state",
+    "packages/game-state",
     "packages/client-app",
     "packages/env",
+    "packages/models",
     "packages/net-client",
     "packages/net-protocol",
     "packages/net-server",
-    "packages/renderer",
     "packages/server-app"
   ],
   "devDependencies": {
     "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.1",
     "@babel/preset-typescript": "^7.1.0",
     "@workspace-builder/babel": "^0.2.0",

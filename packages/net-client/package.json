@@ -9,7 +9,7 @@
     "@workspace-builder/copy-ts"
   ],
   "dependencies": {
-    "@multi/app-state": "1.0.0",
+    "@multi/game-state": "1.0.0",
     "@multi/net-protocol": "1.0.0",
     "little-api": "^2.0.0"
   }

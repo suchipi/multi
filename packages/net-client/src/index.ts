@@ -1,8 +1,8 @@
 import createClient from "little-api/client";
-import reducer, { initialState, State, Action } from "@multi/app-state";
+import { reducer, initialState, State, Action } from "@multi/game-state";
 import { ServerMessage, ClientMessage } from "@multi/net-protocol";
 
-type NetClient = {
+export type NetClient = {
   connect(): Promise<void>;
   dispatch(action: Action): void;
   getState(): State;

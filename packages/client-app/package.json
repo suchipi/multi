@@ -5,9 +5,12 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@multi/client-state": "1.0.0",
+    "@multi/game-state": "1.0.0",
+    "@multi/models": "1.0.0",
     "@multi/net-client": "1.0.0",
     "@multi/env": "1.0.0",
-    "@multi/renderer": "1.0.0"
+    "mitt": "^1.1.3"
   },
   "devDependencies": {
     "@workspace-builder/tools": "^0.2.0",

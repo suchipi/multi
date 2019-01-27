@@ -1,4 +1,4 @@
-import { State, Action } from "@multi/app-state";
+import { State, Action } from "@multi/game-state";
 
 export type ClientMessage =
   | {

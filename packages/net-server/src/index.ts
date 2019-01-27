@@ -1,6 +1,6 @@
 import createServer from "little-api/server";
 import WebSocket from "ws";
-import reducer, { initialState } from "@multi/app-state";
+import { initialState, reducer } from "@multi/game-state";
 import { Snapshot, ClientMessage, ServerMessage } from "@multi/net-protocol";
 
 type Client = {

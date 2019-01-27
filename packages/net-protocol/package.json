@@ -9,6 +9,6 @@
     "@workspace-builder/copy-ts"
   ],
   "dependencies": {
-    "@multi/app-state": "1.0.0"
+    "@multi/game-state": "1.0.0"
   }
 }
