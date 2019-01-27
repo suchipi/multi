@@ -2,7 +2,7 @@ import { setEnv } from "@multi/env";
 import makeNetClient, { NetClient } from "@multi/net-client";
 import setupControls from "./controls";
 import KeyListener from "./KeyListener";
-import { Action } from "@multi/game-state";
+import { Action } from "./LocalState/Action";
 import { SharedState, selectors } from "./SharedState";
 import { LocalState, initialLocalState, localStateReducer } from "./LocalState";
 
@@ -29,6 +29,7 @@ export default class Client {
 
   dispatch(action: Action) {
     this.localState = localStateReducer(this.localState, action);
+    // @ts-ignore
     this.netClient.dispatch(action);
   }
 
