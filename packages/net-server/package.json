@@ -13,7 +13,8 @@
     "@multi/net-protocol": "1.0.0",
     "@types/ws": "^6.0.1",
     "debug": "^4.1.1",
-    "little-api": "^2.0.0"
+    "little-api": "^2.0.0",
+    "uid": "^0.0.2"
   },
   "devDependencies": {
     "prettier": "^1.16.1"

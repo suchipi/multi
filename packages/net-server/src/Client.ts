@@ -1,17 +1,17 @@
 import WebSocket from "ws";
-import { ServerMessage } from "@multi/net-protocol";
+import { ServerMessage, ClientID } from "@multi/net-protocol";
 import Snapshot from "./Snapshot";
 
-let clientId = 0;
 class Client {
-  id: number;
+  id: ClientID;
   socket: WebSocket;
   lastSeenAt: number;
   lastReceivedSnapshot: Snapshot | null;
   messageQueue: Array<ServerMessage>;
+  leaveTimeout: NodeJS.Timeout;
 
-  constructor(socket: WebSocket) {
-    this.id = clientId++;
+  constructor(id: ClientID, socket: WebSocket) {
+    this.id = id;
     this.socket = socket;
     this.lastSeenAt = Date.now();
     this.lastReceivedSnapshot = null;

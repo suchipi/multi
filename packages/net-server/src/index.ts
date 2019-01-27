@@ -1,11 +1,12 @@
 import createServer from "little-api/server";
 import WebSocket from "ws";
+import debug from "debug";
+import uid from "uid";
 import { initialState, reducer } from "@multi/game-state";
-import { ClientMessage, ServerMessage } from "@multi/net-protocol";
+import { ClientMessage, ServerMessage, ClientID } from "@multi/net-protocol";
 import Snapshot from "./Snapshot";
 import RollingQueue from "./RollingQueue";
 import Client from "./Client";
-import debug from "debug";
 
 const log = debug("@multi/net-server");
 
@@ -16,16 +17,33 @@ export default function netServer() {
   const clients: Set<Client> = new Set();
 
   const server = createServer({
+    methods: {
+      createId(): ClientID {
+        return uid(16);
+      },
+    },
     socketMethods: {
-      connect(socket: WebSocket) {
-        const client = new Client(socket);
-        log(`client ${client.id} connected`);
+      connect(socket: WebSocket, id: ClientID) {
+        let client;
+        const existingClient = Array.from(clients).find(
+          (someClient) => someClient.id === id
+        );
+        if (existingClient) {
+          client = existingClient;
+          client.socket = socket;
+          clearTimeout(client.leaveTimeout);
+        } else {
+          client = new Client(id, socket);
+          clients.add(client);
+        }
 
-        clients.add(client);
+        log(`client ${client.id} connected`);
 
         socket.on("close", () => {
           log(`client ${client.id} disconnected`);
-          clients.delete(client);
+          client.leaveTimeout = setTimeout(() => {
+            clients.delete(client);
+          }, 30000);
         });
 
         socket.on("pong", () => {

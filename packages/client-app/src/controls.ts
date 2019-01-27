@@ -12,28 +12,28 @@ export default function setupControls(client: Client): KeyListener {
 
   controls.keydown.on("ArrowUp", () => {
     client.dispatch({
-      type: "MOVE_CAMERA",
+      type: "LOCAL_MOVE_CAMERA",
       payload: move(0, -1),
     });
   });
 
   controls.keydown.on("ArrowDown", () => {
     client.dispatch({
-      type: "MOVE_CAMERA",
+      type: "LOCAL_MOVE_CAMERA",
       payload: move(0, 1),
     });
   });
 
   controls.keydown.on("ArrowLeft", () => {
     client.dispatch({
-      type: "MOVE_CAMERA",
+      type: "LOCAL_MOVE_CAMERA",
       payload: move(-1, 0),
     });
   });
 
   controls.keydown.on("ArrowRight", () => {
     client.dispatch({
-      type: "MOVE_CAMERA",
+      type: "LOCAL_MOVE_CAMERA",
       payload: move(1, 0),
     });
   });

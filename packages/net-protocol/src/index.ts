@@ -23,3 +23,5 @@ export type ServerMessage =
       type: "ack";
       actionId: number;
     };
+
+export type ClientID = string;

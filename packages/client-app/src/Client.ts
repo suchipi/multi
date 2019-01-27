@@ -29,10 +29,12 @@ export default class Client {
 
   dispatch(action: Action) {
     this.localState = localStateReducer(this.localState, action);
-    // @ts-ignore passing LocalAction into remote reducer.
-    // Shouldn't be a problem, though, since default case
-    // of a reducer returns the current state.
-    this.netClient.dispatch(action);
+    if (!action.type.startsWith("LOCAL")) {
+      // @ts-ignore TS doesn't know all local types
+      // have to start with LOCAL, so it thinks a
+      // local type might make it into here.
+      this.netClient.dispatch(action);
+    }
   }
 
   connect() {

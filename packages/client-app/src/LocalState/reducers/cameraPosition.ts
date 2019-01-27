@@ -9,7 +9,7 @@ export function initialState(): State {
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case "MOVE_CAMERA": {
+    case "LOCAL_MOVE_CAMERA": {
       return action.payload;
     }
     default: {
