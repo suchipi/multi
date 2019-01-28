@@ -32,7 +32,6 @@ const netClient = (url: string): NetClient => {
   let knownState: State = initialState();
   let optimisticState: State = knownState;
   let optimisticMessageQueue: Array<ClientActionMessage> = [];
-  let lastTickId: number = -1;
   let actionId: number = 0;
 
   const send = (message: ClientMessage) => {
@@ -81,6 +80,15 @@ const netClient = (url: string): NetClient => {
           // @ts-ignore failure to refine type
           const { actionId } = serverMessage;
           receiveAck(actionId);
+        }
+        case "ping": {
+          send({ type: "pong" });
+
+          // HACK: TICKs never get acked since they're never sent,
+          // so ack them all whenever the server pings
+          optimisticMessageQueue
+            .filter((message) => message.action.type === "TICK")
+            .forEach((message) => receiveAck(message.actionId));
         }
       }
     });
@@ -143,8 +151,6 @@ const netClient = (url: string): NetClient => {
         // players there were connected). But we make it look like the server
         // is acking them so that we can put them in the optimistic message
         // queue normally. This might turn out to be a huge mistake.
-        receiveAck(lastTickId);
-        lastTickId = message.actionId;
       } else {
         log(`Sending message ${message.actionId} to server`);
         send(message);

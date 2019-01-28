@@ -24,9 +24,14 @@ class Client {
 
   flushQueue() {
     if (this.messageQueue.length > 0) {
-      this.socket.send(JSON.stringify(this.messageQueue));
+      try {
+        this.socket.send(JSON.stringify(this.messageQueue));
+        this.messageQueue = [];
+      } catch (err) {
+        // Failed to send, either it'll get flushed
+        // later or this client will be marked as disconnected
+      }
     }
-    this.messageQueue = [];
   }
 
   updateLastSeenAt() {

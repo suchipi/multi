@@ -70,10 +70,6 @@ export default function netServer() {
           }, 30000);
         });
 
-        socket.on("pong", () => {
-          client.lastSeenAt = Date.now();
-        });
-
         socket.on("message", (json: string) => {
           const message: ClientMessage = JSON.parse(json);
           try {
@@ -91,6 +87,10 @@ export default function netServer() {
     client.updateLastSeenAt();
 
     switch (message.type) {
+      case "pong": {
+        client.lastSeenAt = Date.now();
+        break;
+      }
       case "ack": {
         log(`client ${client.id} acked snapshot ${message.snapshotId}`);
         client.lastReceivedSnapshot = snapshots.find(
@@ -146,10 +146,9 @@ export default function netServer() {
     });
   }, tickrate);
 
-  // Every 5 sec, ping all clients, and also, remove clients
+  // Every second, ping all clients, and also, remove clients
   // that haven't ponged back.
-  const pingrate = 5000;
-  const noop = () => {};
+  const pingrate = 1000;
   setInterval(() => {
     clients.forEach((client) => {
       if (Date.now() - client.lastSeenAt > pingrate * 2) {
@@ -157,7 +156,7 @@ export default function netServer() {
         client.socket.terminate();
         return;
       }
-      client.socket.ping(noop);
+      client.addMessageToQueue({ type: "ping" });
     });
   }, pingrate);
 

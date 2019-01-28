@@ -1,8 +1,6 @@
 import Renderer from "./Renderer";
 import Client from "./Client";
 
-localStorage.debug = "@multi/*";
-
 const client = new Client();
 
 // @ts-ignore
