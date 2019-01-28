@@ -118,8 +118,8 @@ export default function netServer() {
     return seconds * 1000 + nanoseconds / 1000000;
   }
 
-  // Every 33ms, process the next gamestate snapshot, then send it to players
-  const tickrate = 33;
+  // Every 16ms, process the next gamestate snapshot, then send it to players
+  const tickrate = 16;
   let lastTime = time();
   setInterval(() => {
     const thisTime = time();
