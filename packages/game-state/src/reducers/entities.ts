@@ -7,6 +7,7 @@ import {
   vectorToPosition,
 } from "../models";
 import { Action } from "../Action";
+import { ClientID } from "../ClientID";
 
 export type State = Array<Entity>;
 
@@ -58,5 +59,7 @@ export function reducer(state: State, action: Action): State {
 }
 
 export const selectors = (state) => ({
+  getPlayer: (clientId: ClientID): Entity =>
+    state.find((entity) => entity.components.player === clientId),
   getEntities: (): Array<Entity> => state,
 });

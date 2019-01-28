@@ -1,7 +1,6 @@
 import makeNetClient, { NetClient } from "@multi/net-client";
 import { ClientID } from "@multi/game-state";
-import setupControls from "./controls";
-import KeyListener from "./KeyListener";
+import Controls from "./Controls";
 import { Action } from "./LocalState/Action";
 import { SharedState, selectors } from "./SharedState";
 import { LocalState, initialLocalState, localStateReducer } from "./LocalState";
@@ -10,13 +9,12 @@ export default class Client {
   id: ClientID;
   netClient: NetClient;
   localState: LocalState;
-  controls: KeyListener;
+  controls: Controls;
 
   constructor() {
     this.netClient = makeNetClient("http://localhost:6789");
     this.localState = initialLocalState();
-    this.controls = setupControls(this);
-    this.controls.bindListeners();
+    this.controls = new Controls(this);
   }
 
   getState(): SharedState {

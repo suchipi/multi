@@ -20,3 +20,7 @@ export function subtractPosition(first: Position, second: Position) {
     y: first.y - second.y,
   };
 }
+
+export function equalsPosition(first: Position, second: Position) {
+  return first.x === second.x && first.y === second.y;
+}

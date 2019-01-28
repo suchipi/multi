@@ -1,42 +1,97 @@
-import { addPosition, makePosition } from "@multi/game-state";
-import KeyListener from "./KeyListener";
+import { Vector, makeVector } from "@multi/game-state";
 import Client from "./Client";
+import KeyListener from "./KeyListener";
+import GamepadListener from "./GamepadListener";
 
-export default function setupControls(client: Client): KeyListener {
-  const controls = new KeyListener();
+export default class Controls {
+  client: Client;
+  keyboard: KeyListener;
+  gamepad: GamepadListener;
 
-  const moveCamera = (x: number, y: number) => {
-    const cameraPosition = client.selectors.client.getCameraPosition();
-    return addPosition(cameraPosition, makePosition(x, y));
-  };
+  constructor(client: Client) {
+    this.client = client;
+    this.keyboard = new KeyListener();
+    this.keyboard.bindListeners();
+    this.gamepad = new GamepadListener();
+  }
 
-  controls.keydown.on("ArrowUp", () => {
-    client.dispatch({
-      type: "LOCAL_MOVE_CAMERA",
-      payload: moveCamera(0, -10),
-    });
-  });
+  update() {
+    this.gamepad.update();
+  }
 
-  controls.keydown.on("ArrowDown", () => {
-    client.dispatch({
-      type: "LOCAL_MOVE_CAMERA",
-      payload: moveCamera(0, 10),
-    });
-  });
+  inputMode() {
+    return this.client.selectors.local.getInputMode();
+  }
 
-  controls.keydown.on("ArrowLeft", () => {
-    client.dispatch({
-      type: "LOCAL_MOVE_CAMERA",
-      payload: moveCamera(-10, 0),
-    });
-  });
+  leftStick(): Vector {
+    if (this.inputMode() === "GAMEPAD") {
+      return this.gamepad.leftStick;
+    } else {
+      return this.vectorFromKeys("w", "s", "a", "d");
+    }
+  }
 
-  controls.keydown.on("ArrowRight", () => {
-    client.dispatch({
-      type: "LOCAL_MOVE_CAMERA",
-      payload: moveCamera(10, 0),
-    });
-  });
+  rightStick(): Vector {
+    if (this.inputMode() === "GAMEPAD") {
+      return this.gamepad.rightStick;
+    } else {
+      return this.vectorFromKeys(
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight"
+      );
+    }
+  }
 
-  return controls;
+  resetCameraPressed(): boolean {
+    if (this.inputMode() === "GAMEPAD") {
+      return this.gamepad.pressed.has("r3");
+    } else {
+      return this.keyboard.pressed.has("c");
+    }
+  }
+
+  vectorFromKeys(
+    // TODO: this is supposed to be up, down, left, right
+    // but canvas y-down is messing me up
+    downKey: string,
+    upKey: string,
+    leftKey: string,
+    rightKey: string
+  ): Vector {
+    const pressedKeys = this.keyboard.pressed;
+    let angle = 0;
+    let magnitude = 1;
+
+    if (pressedKeys.has(upKey) && pressedKeys.has(rightKey)) {
+      // up right
+      angle = 45;
+    } else if (pressedKeys.has(upKey) && pressedKeys.has(leftKey)) {
+      // up left
+      angle = 180 - 45;
+    } else if (pressedKeys.has(downKey) && pressedKeys.has(rightKey)) {
+      // down right
+      angle = 360 - 45;
+    } else if (pressedKeys.has(downKey) && pressedKeys.has(leftKey)) {
+      // down left
+      angle = 180 + 45;
+    } else if (pressedKeys.has(upKey) && !pressedKeys.has(downKey)) {
+      // up
+      angle = 90;
+    } else if (pressedKeys.has(downKey) && !pressedKeys.has(upKey)) {
+      // down
+      angle = 270;
+    } else if (pressedKeys.has(leftKey) && !pressedKeys.has(rightKey)) {
+      // left
+      angle = 180;
+    } else if (pressedKeys.has(rightKey) && !pressedKeys.has(leftKey)) {
+      // right
+      angle = 0;
+    } else {
+      magnitude = 0;
+    }
+
+    return makeVector(angle, magnitude);
+  }
 }

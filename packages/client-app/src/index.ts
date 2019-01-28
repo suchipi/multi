@@ -25,6 +25,7 @@ Object.assign(pre.style, {
   maxWidth: "33vw",
   overflow: "auto",
 });
+pre.textContent = "Connecting...";
 
 document.body.appendChild(canvas);
 document.body.appendChild(pre);

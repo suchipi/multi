@@ -10,6 +10,6 @@ export type SharedState = {
 };
 
 export const selectors = (state: SharedState) => ({
-  client: localSelectors(state.local),
+  local: localSelectors(state.local),
   game: gameSelectors(state.game),
 });

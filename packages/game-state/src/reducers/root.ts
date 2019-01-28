@@ -5,6 +5,7 @@ import {
   selectors as entitiesSelectors,
 } from "./entities";
 import { Action } from "../Action";
+import { ClientID } from "../ClientID";
 
 export type State = {
   entities: EntitiesState;
@@ -23,5 +24,7 @@ export function reducer(state: State, action: Action): State {
 }
 
 export const selectors = (state) => ({
+  getPlayer: (clientId: ClientID) =>
+    entitiesSelectors(state.entities).getPlayer(clientId),
   getEntities: () => entitiesSelectors(state.entities).getEntities(),
 });
