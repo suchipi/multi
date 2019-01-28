@@ -41,7 +41,7 @@ export default class Renderer {
           ctx.moveTo(offsetPosition.x, offsetPosition.y);
           const arrowEndPosition = addPosition(
             offsetPosition,
-            vectorToPosition(makeVector(player.movement.angle, 10))
+            vectorToPosition(makeVector(player.movement.angle, 11))
           );
           ctx.lineTo(arrowEndPosition.x, arrowEndPosition.y);
           ctx.stroke();
