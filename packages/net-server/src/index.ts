@@ -43,7 +43,7 @@ export default function netServer() {
     },
     socketMethods: {
       connect(socket: WebSocket, id: ClientID) {
-        let client;
+        let client: Client;
         const existingClient = Array.from(clients).find(
           (someClient) => someClient.id === id
         );
