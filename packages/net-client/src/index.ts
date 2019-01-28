@@ -35,7 +35,11 @@ const netClient = (url: string): NetClient => {
   let actionId: number = 0;
 
   const send = (message: ClientMessage) => {
-    socket.send(JSON.stringify(message));
+    try {
+      socket.send(JSON.stringify(message));
+    } catch (err) {
+      // ignored
+    }
   };
 
   const recalculateOptimisticState = () => {
@@ -53,13 +57,9 @@ const netClient = (url: string): NetClient => {
     );
     if (indexOfMessage !== -1) {
       const message = optimisticMessageQueue[indexOfMessage];
-      if (message.action.type !== "TICK") {
-        log(`Server acked ${actionId}; removing from optimistic message queue`);
-      }
+      log(`Server acked ${actionId}; removing from optimistic message queue`);
       optimisticMessageQueue.splice(indexOfMessage, 1);
-      if (message.action.type !== "TICK") {
-        log("Optimistic message queue: ", [...optimisticMessageQueue]);
-      }
+      log("Optimistic message queue: ", [...optimisticMessageQueue]);
     }
   }
 
@@ -80,15 +80,6 @@ const netClient = (url: string): NetClient => {
           // @ts-ignore failure to refine type
           const { actionId } = serverMessage;
           receiveAck(actionId);
-        }
-        case "ping": {
-          send({ type: "pong" });
-
-          // HACK: TICKs never get acked since they're never sent,
-          // so ack them all whenever the server pings
-          optimisticMessageQueue
-            .filter((message) => message.action.type === "TICK")
-            .forEach((message) => receiveAck(message.actionId));
         }
       }
     });
@@ -134,27 +125,15 @@ const netClient = (url: string): NetClient => {
         action,
         actionId: actionId++,
       };
-      if (action.type !== "TICK") {
-        log(`Outbound message ${message.actionId}:`, message);
-      }
+      log(`Outbound message ${message.actionId}:`, message);
       optimisticMessageQueue.push(message);
-      if (action.type !== "TICK") {
-        log(`Added message ${message.actionId} to optimistic message queue:`, [
-          ...optimisticMessageQueue,
-        ]);
-      }
+      log(`Added message ${message.actionId} to optimistic message queue:`, [
+        ...optimisticMessageQueue,
+      ]);
       recalculateOptimisticState();
 
-      if (message.action.type === "TICK") {
-        // We don't send TICKs to the server, because it ticks on its own
-        // internally (and if we did, the tickrate would increase the more
-        // players there were connected). But we make it look like the server
-        // is acking them so that we can put them in the optimistic message
-        // queue normally. This might turn out to be a huge mistake.
-      } else {
-        log(`Sending message ${message.actionId} to server`);
-        send(message);
-      }
+      log(`Sending message ${message.actionId} to server`);
+      send(message);
 
       setTimeout(() => {
         if (optimisticMessageQueue.includes(message)) {

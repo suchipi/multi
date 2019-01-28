@@ -3,10 +3,6 @@ import { Vector } from "./models";
 
 export type Action =
   | {
-      type: "TICK";
-      elapsedTime: number; // ms
-    }
-  | {
       type: "PLAYER_JOIN";
       clientId: ClientID;
     }

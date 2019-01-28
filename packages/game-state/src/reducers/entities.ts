@@ -3,7 +3,7 @@ import {
   Entity,
   makeEntity,
   addPosition,
-  makeVector,
+  makeAngle,
   vectorToPosition,
 } from "../models";
 import { Action } from "../Action";
@@ -18,21 +18,13 @@ export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "PLAYER_JOIN": {
       const { clientId } = action;
-      if (
-        state.find(
-          (entity) =>
-            entity.components.player &&
-            entity.components.player.clientId === clientId
-        )
-      ) {
+      if (state.find((entity) => entity.components.player === clientId)) {
         return state;
       }
       const entity = makeEntity();
-      entity.components.player = {
-        clientId: clientId,
-        movement: makeVector(270, 0), // facing down, not moving
-      };
+      entity.components.player = clientId;
       entity.components.color = "red";
+      entity.components.direction = makeAngle(270); // facing down by default
       return produce(state, (draft) => {
         draft.push(entity);
       });
@@ -41,41 +33,23 @@ export function reducer(state: State, action: Action): State {
       const { clientId, movement } = action;
       return produce(state, (draft) => {
         const player = draft.find(
-          (entity) =>
-            entity.components.player &&
-            entity.components.player.clientId === clientId
+          (entity) => entity.components.player === clientId
         );
-        if (player && player.components.player) {
-          player.components.player.movement = movement;
-        }
+        if (!player) return;
+        player.components.direction = movement.angle;
+
+        const { position } = player.components;
+        if (!position) return;
+        const newPosition = addPosition(position, vectorToPosition(movement));
+        player.components.position = newPosition;
       });
     }
     case "PLAYER_LEAVE": {
       const { clientId } = action;
       return state.filter(
         (entity) =>
-          !entity.components.player ||
-          (entity.components.player &&
-            entity.components.player.clientId !== clientId)
+          !entity.components.player || entity.components.player !== clientId
       );
-    }
-    case "TICK": {
-      const { elapsedTime } = action;
-      return produce(state, (draft) => {
-        draft.forEach((entity) => {
-          const { player, position } = entity.components;
-          if (!player || !position) return;
-          if (player.movement.magnitude === 0) return;
-
-          const distance = (elapsedTime * player.movement.magnitude) / 100;
-
-          const newPosition = addPosition(
-            position,
-            vectorToPosition(makeVector(player.movement.angle, distance))
-          );
-          entity.components.position = newPosition;
-        });
-      });
     }
     default: {
       return state;

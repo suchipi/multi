@@ -11,9 +11,6 @@ export type ClientMessage =
   | {
       type: "ack";
       snapshotId: number;
-    }
-  | {
-      type: "pong";
     };
 
 export type ServerMessage =
@@ -25,7 +22,4 @@ export type ServerMessage =
   | {
       type: "ack";
       actionId: number;
-    }
-  | {
-      type: "ping";
     };

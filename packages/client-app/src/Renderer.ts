@@ -23,7 +23,7 @@ export default class Renderer {
     const entities = client.selectors.game.getEntities();
     const cameraPosition = client.selectors.client.getCameraPosition();
     entities.forEach((entity) => {
-      const { position, color, player } = entity.components;
+      const { position, color, direction } = entity.components;
       if (position) {
         const offsetPosition = subtractPosition(position, cameraPosition);
 
@@ -35,13 +35,13 @@ export default class Renderer {
         ctx.strokeStyle = "white";
         ctx.stroke();
 
-        if (player) {
+        if (direction) {
           ctx.strokeStyle = color || "white";
           ctx.beginPath();
           ctx.moveTo(offsetPosition.x, offsetPosition.y);
           const arrowEndPosition = addPosition(
             offsetPosition,
-            vectorToPosition(makeVector(player.movement.angle, 11))
+            vectorToPosition(makeVector(direction, 11))
           );
           ctx.lineTo(arrowEndPosition.x, arrowEndPosition.y);
           ctx.stroke();

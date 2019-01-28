@@ -1,15 +1,13 @@
 import { ClientID } from "../ClientID";
 import { Position, makePosition } from "./Position";
-import { Vector } from "./Vector";
+import { Angle } from "./Angle";
 
 export type Entity = {
   components: {
     position?: void | Position;
     color?: void | string;
-    player?: void | {
-      clientId: ClientID;
-      movement: Vector;
-    };
+    player?: ClientID;
+    direction?: void | Angle;
   };
 };
 

@@ -1,4 +1,5 @@
 import Renderer from "./Renderer";
+import Updater from "./Updater";
 import Client from "./Client";
 
 const client = new Client();
@@ -29,6 +30,7 @@ document.body.appendChild(canvas);
 document.body.appendChild(pre);
 
 const renderer = new Renderer(canvas);
+const updater = new Updater();
 
 let lastTime = null;
 function onFrame(currentTime) {
@@ -44,7 +46,8 @@ function onFrame(currentTime) {
   }
   const elapsedTime = currentTime - lastTime;
   lastTime = currentTime;
-  client.dispatch({ type: "TICK", elapsedTime });
+
+  updater.update(client, elapsedTime);
   renderer.render(client);
 
   const gameState = client.getState();
