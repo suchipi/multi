@@ -1,17 +1,20 @@
 import createClient from "little-api/client";
-import { reducer, initialState, State, Action } from "@multi/game-state";
 import {
+  reducer,
+  initialState,
+  State,
+  Action,
   ServerMessage,
   ClientMessage,
   ClientActionMessage,
   ClientID,
-} from "@multi/net-protocol";
+} from "@multi/game-state";
 import debug from "debug";
 
 const log = debug("@multi/net-client");
 
 export type NetClient = {
-  connect(): Promise<void>;
+  connect(): Promise<ClientID>;
   dispatch(action: Action): void;
   getState(): State;
 };
@@ -29,6 +32,7 @@ const netClient = (url: string): NetClient => {
   let knownState: State = initialState();
   let optimisticState: State = knownState;
   let optimisticMessageQueue: Array<ClientActionMessage> = [];
+  let lastTickId: number = -1;
   let actionId: number = 0;
 
   const send = (message: ClientMessage) => {
@@ -42,8 +46,23 @@ const netClient = (url: string): NetClient => {
       },
       knownState
     );
-    log("Recalculated optimistic state", optimisticState);
   };
+
+  function receiveAck(actionId) {
+    const indexOfMessage = optimisticMessageQueue.findIndex(
+      (clientMessage) => clientMessage.actionId === actionId
+    );
+    if (indexOfMessage !== -1) {
+      const message = optimisticMessageQueue[indexOfMessage];
+      if (message.action.type !== "TICK") {
+        log(`Server acked ${actionId}; removing from optimistic message queue`);
+      }
+      optimisticMessageQueue.splice(indexOfMessage, 1);
+      if (message.action.type !== "TICK") {
+        log("Optimistic message queue: ", [...optimisticMessageQueue]);
+      }
+    }
+  }
 
   function receiveMessages(serverMessages: Array<ServerMessage>) {
     log("Received messages from server:", serverMessages);
@@ -61,16 +80,7 @@ const netClient = (url: string): NetClient => {
         case "ack": {
           // @ts-ignore failure to refine type
           const { actionId } = serverMessage;
-          const indexOfMessage = optimisticMessageQueue.findIndex(
-            (clientMessage) => clientMessage.actionId === actionId
-          );
-          if (indexOfMessage !== -1) {
-            log(
-              `Server acked ${actionId}; removing from optimistic message queue`
-            );
-            optimisticMessageQueue.splice(indexOfMessage, 1);
-            log("Optimistic message queue: ", [...optimisticMessageQueue]);
-          }
+          receiveAck(actionId);
         }
       }
     });
@@ -89,7 +99,7 @@ const netClient = (url: string): NetClient => {
           };
           socket.onopen = () => {
             log("Connected to server");
-            resolve();
+            resolve(clientId);
           };
           socket.onclose = () => {
             log("Socket closed; reconnecting in 1 second");
@@ -116,16 +126,29 @@ const netClient = (url: string): NetClient => {
         action,
         actionId: actionId++,
       };
-      log(`Outbound message ${message.actionId}:`, message);
+      if (action.type !== "TICK") {
+        log(`Outbound message ${message.actionId}:`, message);
+      }
       optimisticMessageQueue.push(message);
-      log(`Added message ${message.actionId} to optimistic message queue:`, [
-        ...optimisticMessageQueue,
-      ]);
+      if (action.type !== "TICK") {
+        log(`Added message ${message.actionId} to optimistic message queue:`, [
+          ...optimisticMessageQueue,
+        ]);
+      }
       recalculateOptimisticState();
 
-      // send to server
-      log(`Sending message ${message.actionId} to server`);
-      send(message);
+      if (message.action.type === "TICK") {
+        // We don't send TICKs to the server, because it ticks on its own
+        // internally (and if we did, the tickrate would increase the more
+        // players there were connected). But we make it look like the server
+        // is acking them so that we can put them in the optimistic message
+        // queue normally. This might turn out to be a huge mistake.
+        receiveAck(lastTickId);
+        lastTickId = message.actionId;
+      } else {
+        log(`Sending message ${message.actionId} to server`);
+        send(message);
+      }
 
       setTimeout(() => {
         if (optimisticMessageQueue.includes(message)) {

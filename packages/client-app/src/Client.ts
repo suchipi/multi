@@ -1,14 +1,13 @@
-import { setEnv } from "@multi/env";
 import makeNetClient, { NetClient } from "@multi/net-client";
+import { ClientID } from "@multi/game-state";
 import setupControls from "./controls";
 import KeyListener from "./KeyListener";
 import { Action } from "./LocalState/Action";
 import { SharedState, selectors } from "./SharedState";
 import { LocalState, initialLocalState, localStateReducer } from "./LocalState";
 
-setEnv("client");
-
 export default class Client {
+  id: ClientID;
   netClient: NetClient;
   localState: LocalState;
   controls: KeyListener;
@@ -29,6 +28,7 @@ export default class Client {
 
   dispatch(action: Action) {
     this.localState = localStateReducer(this.localState, action);
+    // Don't dispatch local actions (which only affect local state, not game state)
     if (!action.type.startsWith("LOCAL")) {
       // @ts-ignore TS doesn't know all local types
       // have to start with LOCAL, so it thinks a
@@ -38,7 +38,9 @@ export default class Client {
   }
 
   connect() {
-    return this.netClient.connect();
+    return this.netClient.connect().then((id) => {
+      this.id = id;
+    });
   }
 
   get selectors() {

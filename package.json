@@ -5,10 +5,7 @@
   "workspaces": [
     "packages/game-state",
     "packages/client-app",
-    "packages/env",
-    "packages/models",
     "packages/net-client",
-    "packages/net-protocol",
     "packages/net-server",
     "packages/server-app"
   ],

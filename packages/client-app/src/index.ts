@@ -1,18 +1,17 @@
-import { setEnv } from "@multi/env";
 import Renderer from "./Renderer";
 import Client from "./Client";
 
 localStorage.debug = "@multi/*";
 
-setEnv("client");
 const client = new Client();
 
 // @ts-ignore
 global.client = client;
 
 const canvas = document.createElement("canvas");
-// @ts-ignore
-canvas.style.imageRendering = "pixelated";
+Object.assign(canvas.style, {
+  imageRendering: "pixelated",
+});
 
 const pre = document.createElement("pre");
 Object.assign(pre.style, {
@@ -33,13 +32,23 @@ document.body.appendChild(pre);
 
 const renderer = new Renderer(canvas);
 
-function onFrame() {
+let lastTime = null;
+function onFrame(currentTime) {
   canvas.width = window.innerWidth / 4;
   canvas.height = window.innerHeight / 4;
   canvas.style.width = window.innerWidth + "px";
   canvas.style.height = window.innerHeight + "px";
 
+  if (lastTime == null) {
+    lastTime = currentTime;
+    requestAnimationFrame(onFrame);
+    return;
+  }
+  const elapsedTime = currentTime - lastTime;
+  lastTime = currentTime;
+  client.dispatch({ type: "TICK", elapsedTime });
   renderer.render(client);
+
   const gameState = client.getState();
   pre.textContent = JSON.stringify(gameState, null, 2);
 

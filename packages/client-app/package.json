@@ -6,9 +6,8 @@
   "private": true,
   "dependencies": {
     "@multi/game-state": "1.0.0",
-    "@multi/models": "1.0.0",
     "@multi/net-client": "1.0.0",
-    "@multi/env": "1.0.0",
+    "debug": "^4.1.1",
     "mitt": "^1.1.3"
   },
   "devDependencies": {

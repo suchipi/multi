@@ -2,8 +2,15 @@ import createServer from "little-api/server";
 import WebSocket from "ws";
 import debug from "debug";
 import uid from "uid";
-import { initialState, reducer } from "@multi/game-state";
-import { ClientMessage, ServerMessage, ClientID } from "@multi/net-protocol";
+import deepEqual from "deep-equal";
+import {
+  initialState,
+  reducer,
+  Action,
+  ClientMessage,
+  ServerMessage,
+  ClientID,
+} from "@multi/game-state";
 import Snapshot from "./Snapshot";
 import RollingQueue from "./RollingQueue";
 import Client from "./Client";
@@ -16,9 +23,23 @@ export default function netServer() {
 
   const clients: Set<Client> = new Set();
 
+  const dispatch = (action: Action) => {
+    if (action.type !== "TICK") {
+      log(`server dispatched action: ${JSON.stringify(action)}`);
+    }
+    const lastState = snapshots.mostRecent().state;
+    const nextState = reducer(snapshots.mostRecent().state, action);
+    if (!deepEqual(lastState, nextState, { strict: true })) {
+      const snapshot = new Snapshot(nextState);
+      log(`created snapshot ${snapshot.id}`);
+      snapshots.add(snapshot);
+    }
+  };
+
   const server = createServer({
     methods: {
       createId(): ClientID {
+        // @ts-ignore typedef is wrong
         return uid(16);
       },
     },
@@ -31,10 +52,12 @@ export default function netServer() {
         if (existingClient) {
           client = existingClient;
           client.socket = socket;
+          client.lastReceivedSnapshot = null;
           clearTimeout(client.leaveTimeout);
         } else {
           client = new Client(id, socket);
           clients.add(client);
+          dispatch({ type: "PLAYER_JOIN", clientId: client.id });
         }
 
         log(`client ${client.id} connected`);
@@ -43,6 +66,7 @@ export default function netServer() {
           log(`client ${client.id} disconnected`);
           client.leaveTimeout = setTimeout(() => {
             clients.delete(client);
+            dispatch({ type: "PLAYER_LEAVE", clientId: client.id });
           }, 30000);
         });
 
@@ -78,11 +102,7 @@ export default function netServer() {
         const action = message.action;
         log(`client ${client.id} sent action: ${JSON.stringify(action)}`);
 
-        const snapshot = new Snapshot(
-          reducer(snapshots.mostRecent().state, action)
-        );
-        log(`created snapshot ${snapshot.id}`);
-        snapshots.add(snapshot);
+        dispatch(action);
         const ack: ServerMessage = {
           type: "ack",
           actionId: message.actionId,
@@ -93,10 +113,20 @@ export default function netServer() {
     }
   }
 
-  // Every 33ms, check for clients that haven't
-  // acked the latest snapshot and send it to them
+  function time() {
+    const [seconds, nanoseconds] = process.hrtime();
+    return seconds * 1000 + nanoseconds / 1000000;
+  }
+
+  // Every 33ms, process the next gamestate snapshot, then send it to players
   const tickrate = 33;
+  let lastTime = time();
   setInterval(() => {
+    const thisTime = time();
+    const elapsedTime = thisTime - lastTime;
+    lastTime = thisTime;
+    dispatch({ type: "TICK", elapsedTime });
+
     clients.forEach((client) => {
       const mostRecentSnapshot = snapshots.mostRecent();
       if (client.lastReceivedSnapshot !== mostRecentSnapshot) {

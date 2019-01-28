@@ -1,4 +1,4 @@
-import { State, Action } from "@multi/game-state";
+import { State, Action } from "./index";
 
 export type ClientActionMessage = {
   type: "action";
@@ -23,5 +23,3 @@ export type ServerMessage =
       type: "ack";
       actionId: number;
     };
-
-export type ClientID = string;

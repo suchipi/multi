@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { ServerMessage, ClientID } from "@multi/net-protocol";
+import { ServerMessage, ClientID } from "@multi/game-state";
 import Snapshot from "./Snapshot";
 
 class Client {

@@ -1,5 +1,10 @@
 import Client from "./Client";
-import { subtractVec2 } from "@multi/models";
+import { Position, subtractPosition, makePosition } from "@multi/game-state";
+
+function worldPosToCanvasPos(position: Position) {
+  // Canvas is y-down, world pos is y-up
+  return makePosition(position.x, -position.y);
+}
 
 export default class Renderer {
   canvas: HTMLCanvasElement;
@@ -20,7 +25,10 @@ export default class Renderer {
     entities.forEach((entity) => {
       const { position, color } = entity.components;
       if (position) {
-        const offsetPosition = subtractVec2(position, cameraPosition);
+        const offsetPosition = subtractPosition(
+          worldPosToCanvasPos(position),
+          cameraPosition
+        );
 
         ctx.beginPath();
         ctx.arc(offsetPosition.x, offsetPosition.y, 20, 0, 2 * Math.PI);

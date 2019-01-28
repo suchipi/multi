@@ -9,7 +9,6 @@
     "@workspace-builder/copy-ts"
   ],
   "dependencies": {
-    "@multi/env": "1.0.0",
-    "@multi/models": "1.0.0"
+    "immer": "^1.12.1"
   }
 }

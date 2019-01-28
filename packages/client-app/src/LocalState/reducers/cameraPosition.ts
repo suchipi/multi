@@ -1,10 +1,10 @@
-import { Vec2, makeVec2 } from "@multi/models";
+import { Position, makePosition } from "@multi/game-state";
 import { Action } from "../Action";
 
-export type State = Vec2;
+export type State = Position;
 
 export function initialState(): State {
-  return makeVec2(0, 0);
+  return makePosition(0, 0);
 }
 
 export function reducer(state: State, action: Action): State {
@@ -19,5 +19,5 @@ export function reducer(state: State, action: Action): State {
 }
 
 export const selectors = (state: State) => ({
-  getCameraPosition: (): Vec2 => state,
+  getCameraPosition: (): Position => state,
 });

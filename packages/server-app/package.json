@@ -9,7 +9,6 @@
     "@workspace-builder/copy-ts"
   ],
   "dependencies": {
-    "@multi/net-server": "1.0.0",
-    "@multi/env": "1.0.0"
+    "@multi/net-server": "1.0.0"
   }
 }
