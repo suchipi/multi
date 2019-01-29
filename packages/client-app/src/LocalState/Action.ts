@@ -1,4 +1,4 @@
-import { Action as GameAction, Vector, Position } from "@multi/game-state";
+import { Action as GameAction, Vector, Point } from "@multi/game-state";
 
 // ALL LOCAL ACTION TYPES MUST START WITH "LOCAL"-
 // that's how we know not to send them to the server.
@@ -9,7 +9,7 @@ export type LocalAction =
     }
   | {
       type: "LOCAL_TELEPORT_CAMERA";
-      position: Position;
+      position: Point;
     }
   | {
       type: "LOCAL_SET_INPUT_MODE";

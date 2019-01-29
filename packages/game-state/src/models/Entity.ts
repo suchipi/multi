@@ -1,10 +1,10 @@
 import { ClientID } from "../ClientID";
-import { Position, makePosition } from "./Position";
+import { Point, makePoint } from "./Point";
 import { Angle } from "./Angle";
 
 export type Entity = {
   components: {
-    position?: void | Position;
+    position?: void | Point;
     color?: void | string;
     player?: ClientID;
     direction?: void | Angle;
@@ -14,7 +14,7 @@ export type Entity = {
 export function makeEntity(): Entity {
   return {
     components: {
-      position: makePosition(0, 0),
+      position: makePoint(0, 0),
     },
   };
 }

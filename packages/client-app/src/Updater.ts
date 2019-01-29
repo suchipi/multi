@@ -1,5 +1,5 @@
 import Client from "./Client";
-import { makeVector, equalsPosition } from "@multi/game-state";
+import { makeVector, equalsPoint } from "@multi/game-state";
 
 export default class Updater {
   update(client: Client, elapsedTime: number) {
@@ -31,10 +31,12 @@ export default class Updater {
 
     if (client.controls.resetCameraPressed()) {
       const cameraPosition = client.selectors.local.getCameraPosition();
-      const playerPosition = client.selectors.game.getPlayer(
-        localStorage.clientId
-      ).components.position;
-      if (!equalsPosition(cameraPosition, playerPosition)) {
+      const player = client.selectors.game.getPlayer(localStorage.clientId);
+      if (!player) return;
+      const { position: playerPosition } = player.components;
+      if (!playerPosition) return;
+
+      if (!equalsPoint(cameraPosition, playerPosition)) {
         client.dispatch({
           type: "LOCAL_TELEPORT_CAMERA",
           position: playerPosition,

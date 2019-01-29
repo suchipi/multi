@@ -1,5 +1,5 @@
-import { Position } from "./Position";
-import { makeVector, vectorToPosition } from "./Vector";
+import { Point } from "./Point";
+import { makeVector, vectorToPoint } from "./Vector";
 
 export type Angle = {
   // Radians in canvas-style polar coordinate space;
@@ -33,14 +33,14 @@ export function makeAngle(radians: number): Angle {
 
 // Calculate the position of the head of a unit vector with the given angle
 // whose tail is at the origin.
-export function angleToPosition(angle: Angle): Position {
+export function angleToPoint(angle: Angle): Point {
   const vector = makeVector(angle, 1);
-  return vectorToPosition(vector);
+  return vectorToPoint(vector);
 }
 
 // Calculate the angle of the vector whose tail is at `first` and whose head
 // is at `second`.
-export function positionsToAngle(first: Position, second: Position): Angle {
+export function pointsToAngle(first: Point, second: Point): Angle {
   const deltaX = second.x - first.x;
   const deltaY = second.y - first.y;
   // Invert y component because JS math functions

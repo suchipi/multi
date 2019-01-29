@@ -2,9 +2,9 @@ import produce from "immer";
 import {
   Entity,
   makeEntity,
-  addPosition,
+  addPoint,
   makeAngle,
-  vectorToPosition,
+  vectorToPoint,
 } from "../models";
 import { Action } from "../Action";
 import { ClientID } from "../ClientID";
@@ -41,8 +41,8 @@ export function reducer(state: State, action: Action): State {
 
         const { position } = player.components;
         if (!position) return;
-        const newPosition = addPosition(position, vectorToPosition(movement));
-        player.components.position = newPosition;
+        const newPoint = addPoint(position, vectorToPoint(movement));
+        player.components.position = newPoint;
       });
     }
     case "PLAYER_LEAVE": {

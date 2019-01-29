@@ -1,9 +1,9 @@
 import Client from "./Client";
 import {
-  subtractPosition,
-  vectorToPosition,
-  addPosition,
-  makePosition,
+  subtractPoint,
+  vectorToPoint,
+  addPoint,
+  makePoint,
   makeVector,
 } from "@multi/game-state";
 
@@ -22,18 +22,18 @@ export default class Renderer {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const entities = client.selectors.game.getEntities();
-    const cameraPosition = client.selectors.local.getCameraPosition();
+    const cameraPoint = client.selectors.local.getCameraPosition();
     entities.forEach((entity) => {
       const { position, color, direction } = entity.components;
       if (position) {
-        const offsetPosition = subtractPosition(position, cameraPosition);
-        const canvasPosition = addPosition(
-          offsetPosition,
-          makePosition(canvas.width / 2, canvas.height / 2)
+        const offsetPoint = subtractPoint(position, cameraPoint);
+        const canvasPoint = addPoint(
+          offsetPoint,
+          makePoint(canvas.width / 2, canvas.height / 2)
         );
 
         ctx.beginPath();
-        ctx.arc(canvasPosition.x, canvasPosition.y, 10, 0, 2 * Math.PI);
+        ctx.arc(canvasPoint.x, canvasPoint.y, 10, 0, 2 * Math.PI);
         ctx.fillStyle = color || "white";
         ctx.fill();
         ctx.lineWidth = 2;
@@ -43,12 +43,12 @@ export default class Renderer {
         if (direction) {
           ctx.strokeStyle = color || "white";
           ctx.beginPath();
-          ctx.moveTo(canvasPosition.x, canvasPosition.y);
-          const arrowEndPosition = addPosition(
-            canvasPosition,
-            vectorToPosition(makeVector(direction, 11))
+          ctx.moveTo(canvasPoint.x, canvasPoint.y);
+          const arrowEndPoint = addPoint(
+            canvasPoint,
+            vectorToPoint(makeVector(direction, 11))
           );
-          ctx.lineTo(arrowEndPosition.x, arrowEndPosition.y);
+          ctx.lineTo(arrowEndPoint.x, arrowEndPoint.y);
           ctx.stroke();
         }
       }

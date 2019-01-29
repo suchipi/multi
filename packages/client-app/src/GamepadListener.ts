@@ -1,19 +1,19 @@
 import {
   Vector,
   makeVector,
-  makePosition,
-  positionsToVector,
+  makePoint,
+  pointsToVector,
   makeAngle,
 } from "@multi/game-state";
 
 const deadzone = 0.1;
 function stickToVector(x: number, y: number) {
-  const origin = makePosition(0, 0);
+  const origin = makePoint(0, 0);
   // Invert y component because gamepad
   // sticks are normal polar coordinate system
-  const target = makePosition(x, -y);
+  const target = makePoint(x, -y);
 
-  const vector = positionsToVector(origin, target);
+  const vector = pointsToVector(origin, target);
   if (Math.abs(vector.magnitude) < deadzone) {
     vector.magnitude = 0;
   }
