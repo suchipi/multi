@@ -14,6 +14,7 @@ import {
 import Snapshot from "./Snapshot";
 import RollingQueue from "./RollingQueue";
 import Client from "./Client";
+import validateMessage from "./validateMessage";
 
 const log = debug("@multi/net-server");
 
@@ -88,6 +89,11 @@ export default function netServer() {
   function receiveMessage(client: Client, message: ClientMessage) {
     client.updateLastSeenAt();
 
+    const isValid = validateMessage(client, message);
+    if (!isValid) {
+      return;
+    }
+
     switch (message.type) {
       case "ack": {
         log(`client ${client.id} acked snapshot ${message.snapshotId}`);
@@ -109,11 +115,6 @@ export default function netServer() {
         break;
       }
     }
-  }
-
-  function time() {
-    const [seconds, nanoseconds] = process.hrtime();
-    return seconds * 1000 + nanoseconds / 1000000;
   }
 
   // Every 16ms, process the next gamestate snapshot, then send it to players
