@@ -9,7 +9,9 @@ global.client = client;
 
 const canvas = document.createElement("canvas");
 Object.assign(canvas.style, {
-  imageRendering: "pixelated",
+  imageRendering: navigator.userAgent.match(/firefox/i)
+    ? "-moz-crisp-edges"
+    : "pixelated",
 });
 
 const pre = document.createElement("pre");

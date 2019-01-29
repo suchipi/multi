@@ -1,4 +1,4 @@
-import { Vector, makeVector } from "@multi/game-state";
+import { Vector, makeVector, makeAngle } from "@multi/game-state";
 import Client from "./Client";
 import KeyListener from "./KeyListener";
 import GamepadListener from "./GamepadListener";
@@ -53,10 +53,8 @@ export default class Controls {
   }
 
   vectorFromKeys(
-    // TODO: this is supposed to be up, down, left, right
-    // but canvas y-down is messing me up
-    downKey: string,
     upKey: string,
+    downKey: string,
     leftKey: string,
     rightKey: string
   ): Vector {
@@ -64,27 +62,31 @@ export default class Controls {
     let angle = 0;
     let magnitude = 1;
 
+    const half = Math.PI;
+    const quarter = Math.PI / 2;
+    const eighth = Math.PI / 4;
+
     if (pressedKeys.has(upKey) && pressedKeys.has(rightKey)) {
       // up right
-      angle = 45;
+      angle = -eighth;
     } else if (pressedKeys.has(upKey) && pressedKeys.has(leftKey)) {
       // up left
-      angle = 180 - 45;
+      angle = half + eighth;
     } else if (pressedKeys.has(downKey) && pressedKeys.has(rightKey)) {
       // down right
-      angle = 360 - 45;
+      angle = eighth;
     } else if (pressedKeys.has(downKey) && pressedKeys.has(leftKey)) {
       // down left
-      angle = 180 + 45;
+      angle = quarter + eighth;
     } else if (pressedKeys.has(upKey) && !pressedKeys.has(downKey)) {
       // up
-      angle = 90;
+      angle = -quarter;
     } else if (pressedKeys.has(downKey) && !pressedKeys.has(upKey)) {
       // down
-      angle = 270;
+      angle = quarter;
     } else if (pressedKeys.has(leftKey) && !pressedKeys.has(rightKey)) {
       // left
-      angle = 180;
+      angle = half;
     } else if (pressedKeys.has(rightKey) && !pressedKeys.has(leftKey)) {
       // right
       angle = 0;
@@ -92,6 +94,6 @@ export default class Controls {
       magnitude = 0;
     }
 
-    return makeVector(angle, magnitude);
+    return makeVector(makeAngle(angle), magnitude);
   }
 }

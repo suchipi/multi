@@ -1,13 +1,24 @@
-import { Vector, makeVector, radiansToDegrees } from "@multi/game-state";
+import {
+  Vector,
+  makeVector,
+  makePosition,
+  positionsToVector,
+  makeAngle,
+} from "@multi/game-state";
 
 const deadzone = 0.1;
-function stickToVector(x, y) {
-  const angle = radiansToDegrees(Math.atan2(y, x));
-  let magnitude = Math.sqrt(x ** 2 + y ** 2);
-  if (Math.abs(magnitude) < deadzone) {
-    magnitude = 0;
+function stickToVector(x: number, y: number) {
+  const origin = makePosition(0, 0);
+  // Invert y component because gamepad
+  // sticks are normal polar coordinate system
+  const target = makePosition(x, -y);
+
+  const vector = positionsToVector(origin, target);
+  if (Math.abs(vector.magnitude) < deadzone) {
+    vector.magnitude = 0;
   }
-  return makeVector(angle, magnitude);
+
+  return vector;
 }
 
 const buttonNames = {
@@ -34,8 +45,8 @@ function buttonName(index: number) {
 }
 
 export default class GamepadListener {
-  leftStick: Vector = makeVector(0, 0);
-  rightStick: Vector = makeVector(0, 0);
+  leftStick: Vector = makeVector(makeAngle(0), 0);
+  rightStick: Vector = makeVector(makeAngle(0), 0);
   pressed: Set<string> = new Set();
   present: boolean = false;
 

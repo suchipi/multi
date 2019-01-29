@@ -24,3 +24,10 @@ export function subtractPosition(first: Position, second: Position) {
 export function equalsPosition(first: Position, second: Position) {
   return first.x === second.x && first.y === second.y;
 }
+
+// Calculate the distance between two positions.
+export function distance(first: Position, second: Position) {
+  return Math.sqrt(
+    Math.pow(second.x - first.x, 2) + Math.pow(second.y - first.y, 2)
+  );
+}
