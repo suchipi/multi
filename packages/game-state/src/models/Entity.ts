@@ -4,10 +4,10 @@ import { Angle } from "./Angle";
 
 export type Entity = {
   components: {
-    position?: void | Point;
-    color?: void | string;
+    position?: Point;
+    color?: string;
     player?: ClientID;
-    direction?: void | Angle;
+    direction?: Angle;
   };
 };
 

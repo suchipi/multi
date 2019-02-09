@@ -70,7 +70,7 @@ export default function netServer() {
         });
 
         socket.on("pong", () => {
-          client.lastSeenAt = Date.now();
+          client.updateLastSeenAt();
         });
 
         socket.on("message", (json: string) => {
