@@ -1,24 +1,27 @@
 import React, { useRef, useEffect, useContext } from "react";
 
-const FrameContext = React.createContext<Set<(number) => any> | null>(null);
+type FrameCallbacksSet = Set<(number) => any>;
+
+const FrameContext = React.createContext<FrameCallbacksSet | null>(null);
 
 export function FrameProvider({ children }: { children: React.ReactNode }) {
-  const setRef = useRef(new Set());
-  const lastTimeRef = useRef(null);
+  const setRef = useRef<FrameCallbacksSet>(new Set());
+  const lastTimeRef = useRef<number | null>(null);
+  const requestRef = useRef<number | null>(null);
 
   useEffect(() => {
-    function onFrame(currentTime) {
+    function onFrame(currentTime: number) {
       const set = setRef.current;
       const lastTime = lastTimeRef.current;
-      const setLastTime = (value) => (lastTimeRef.current = value);
 
       if (lastTime == null) {
-        setLastTime(currentTime);
-        requestAnimationFrame(onFrame);
+        lastTimeRef.current = currentTime;
+        requestRef.current = requestAnimationFrame(onFrame);
         return;
       }
+
       const elapsedTime = currentTime - lastTime;
-      setLastTime(currentTime);
+      lastTimeRef.current = currentTime;
 
       set.forEach((callback) => {
         try {
@@ -28,10 +31,14 @@ export function FrameProvider({ children }: { children: React.ReactNode }) {
         }
       });
 
-      requestAnimationFrame(onFrame);
+      requestRef.current = requestAnimationFrame(onFrame);
     }
 
-    requestAnimationFrame(onFrame);
+    requestRef.current = requestAnimationFrame(onFrame);
+
+    return () => {
+      cancelAnimationFrame(requestRef.current);
+    };
   }, []);
 
   return (
