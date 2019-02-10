@@ -4,6 +4,7 @@ import debug from "debug";
 import uid from "uid";
 import deepEqual from "deep-equal";
 import {
+  setEnv,
   initialState,
   reducer,
   Action,
@@ -19,6 +20,8 @@ import validateMessage from "./validateMessage";
 const log = debug("@multi/net-server");
 
 export default function netServer() {
+  setEnv("server");
+
   const snapshots: RollingQueue<Snapshot> = new RollingQueue(32);
   snapshots.add(new Snapshot(initialState()));
 

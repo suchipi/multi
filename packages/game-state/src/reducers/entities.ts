@@ -25,7 +25,7 @@ export function reducer(state: State, action: Action): State {
       const entity = makeEntity();
       entity.player = clientId;
       entity.color = "red";
-      entity.direction = makeAngle(270); // facing down by default
+      entity.direction = makeAngle(90); // facing down by default
       return produce(state, (draft) => {
         draft.push(entity);
       });

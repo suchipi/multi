@@ -1,5 +1,6 @@
 import createClient from "little-api/client";
 import {
+  setEnv,
   reducer,
   initialState,
   State,
@@ -22,6 +23,8 @@ export type NetClient = {
 const optimismTimeout = 2000; // ms
 
 const netClient = (url: string): NetClient => {
+  setEnv("client");
+
   const api: any = createClient({
     url,
     methods: ["createId"],
