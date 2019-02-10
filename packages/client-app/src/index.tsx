@@ -1,8 +1,4 @@
 import React from "react";
-
-// @ts-ignore workaround parcel bug where only namespace import of react works
-global.React = React;
-
 import ReactDOM from "react-dom";
 import Client from "./Client";
 import App from "./components/App";
