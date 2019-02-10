@@ -17,5 +17,5 @@
     "parcel-bundler": "^1.11.0",
     "typescript": "^3.2.4"
   },
-  "workspace-builder": "parcel-workspace-builder.js"
+  "workspace-builder": "@workspace-builder/parcel"
 }

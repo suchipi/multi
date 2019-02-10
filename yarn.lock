@@ -1028,6 +1028,14 @@
     globby "^9.0.0"
     shelljs "^0.8.3"
 
+"@workspace-builder/parcel@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@workspace-builder/parcel/-/parcel-0.4.0.tgz#1676895fe6cde8c735c66c368319c91f406b342b"
+  integrity sha512-Tli8kAVv2e4Fgu0c8uG8GwKwFCvnzw5qU6vCwgNj5PFDuS08Mh0mAo841ZAvgioTJKS+myEYdcDriz/8lbUyaA==
+  dependencies:
+    "@workspace-builder/tools" "0.4.0"
+    parcel-bundler "1.11.0"
+
 "@workspace-builder/tools@0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@workspace-builder/tools/-/tools-0.4.0.tgz#ab58db4fea512a96756b07e84c3916a36c1d2a50"
@@ -4454,7 +4462,7 @@ pako@~1.0.5:
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.8.tgz#6844890aab9c635af868ad5fecc62e8acbba3ea4"
   integrity sha512-6i0HVbUfcKaTv+EG8ZTr75az7GFXcLYk9UyLEg7Notv/Ma+z/UG3TCoz6GiNeOrn1E/e63I0X/Hpw18jHOTUnA==
 
-parcel-bundler@^1.11.0:
+parcel-bundler@1.11.0, parcel-bundler@^1.11.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/parcel-bundler/-/parcel-bundler-1.11.0.tgz#7e821a5246d7503aebf3c1bc279b59cbb8a3d4e3"
   integrity sha512-H0w/Obx76vWiG+UtofznfcHZJBmd6JA5iCn7zrGBINyVAh+Nt/JLD6QDROghHLXfJkO4XyczsB+fO+nPbXlFfA==
