@@ -24,7 +24,7 @@ export default class Renderer {
     const entities = client.selectors.game.getEntities();
     const cameraPoint = client.selectors.local.getCameraPosition();
     entities.forEach((entity) => {
-      const { position, color, direction } = entity.components;
+      const { position, color, direction } = entity;
       if (position) {
         const offsetPoint = subtractPoint(position, cameraPoint);
         const canvasPoint = addPoint(

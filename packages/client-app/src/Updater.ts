@@ -33,7 +33,7 @@ export default class Updater {
       const cameraPosition = client.selectors.local.getCameraPosition();
       const player = client.selectors.game.getPlayer(localStorage.clientId);
       if (!player) return;
-      const { position: playerPosition } = player.components;
+      const { position: playerPosition } = player;
       if (!playerPosition) return;
 
       if (!equalsPoint(cameraPosition, playerPosition)) {
