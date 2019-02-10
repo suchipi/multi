@@ -3,8 +3,8 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/game-state",
     "packages/client-app",
+    "packages/game-state",
     "packages/net-client",
     "packages/net-server",
     "packages/server-app"
