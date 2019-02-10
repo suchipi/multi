@@ -18,5 +18,6 @@
     "parcel-bundler": "^1.11.0",
     "typescript": "^3.2.4"
   },
-  "workspace-builder": "@workspace-builder/parcel"
+  "workspace-builder": "@workspace-builder/parcel",
+  "parcelArgs": "--no-hmr"
 }

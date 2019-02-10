@@ -1035,10 +1035,10 @@
     globby "^9.0.0"
     shelljs "^0.8.3"
 
-"@workspace-builder/parcel@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@workspace-builder/parcel/-/parcel-0.4.0.tgz#1676895fe6cde8c735c66c368319c91f406b342b"
-  integrity sha512-Tli8kAVv2e4Fgu0c8uG8GwKwFCvnzw5qU6vCwgNj5PFDuS08Mh0mAo841ZAvgioTJKS+myEYdcDriz/8lbUyaA==
+"@workspace-builder/parcel@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@workspace-builder/parcel/-/parcel-0.6.0.tgz#6a9b1dfb0a2e45623a7202c342754089bdea2542"
+  integrity sha512-5HvZpN9Nw/T7x6k3w0raqOVLHS5yJO7uAHy7oRqSozdKGVNlK7hU2ONkJO3fsZMNvKsf4wPtU5UHhYlgfFoLUw==
   dependencies:
     "@workspace-builder/tools" "0.4.0"
     parcel-bundler "1.11.0"
